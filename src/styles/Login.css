@@ -59,6 +59,18 @@
   width: calc(100% - 20px);
 }
 
+.login-button {
+  width: calc(100% - 20px);
+}
+
 .login-form button:hover {
   background-color: #0056b3;
+}
+
+.banner {
+  width: 100%;
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
 }

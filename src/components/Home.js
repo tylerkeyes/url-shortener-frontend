@@ -1,24 +1,30 @@
 //import logo from './logo.svg';
-import './Home.css';
+import '../styles/Home.css';
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import Login from './Login';
 
-const server_url = 'http://localhost:3001';
-const user_id = '0';
+const server_url = 'http://localhost:3000';
+const user_id = 'demoEmail';
 
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = 'http://localhost:3000';
 
 function Home() {
   const [storedURLs, setStoredURLs] = useState([]);
   const [inputURL, setInputURL] = useState('');
   const [message, setMessage] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const jwtToken = searchParams.get("token");
 
   const fetchStoredURLs = async () => {
     try {
       const endpoint = server_url.concat('/').concat(user_id).concat('/getCreatedUrls')
       const response = await axios.get(endpoint);
-      setStoredURLs(response.data);
+      console.log("fetch stored: " + response.data);
+      if (response.data !== null) {
+        setStoredURLs(response.data);
+      }
     } catch (error) {
       console.error('Error fetching stored URLs:', error);
     }
@@ -30,7 +36,11 @@ function Home() {
 
   const createShortURL = async () => {
     try {
-      const endpoint = server_url.concat('/');
+      if (inputURL === "") {
+        console.log("empty url given");
+        return;
+      }
+      const endpoint = server_url.concat('/?token=').concat(jwtToken);
       let formData = new FormData();
       formData.append("url", inputURL);
       // TODO: handle adding a custom expiration time
@@ -149,18 +159,6 @@ function Home() {
           </table>
         )}
         {storedURLs.length === 0 && <br />}
-      </section>
-
-      <section>
-        <div className="container">
-          <div className="jumbotron text-center text-success">
-            <h1><span className="fa fa-lock"></span> Social Authentication</h1>
-            <p>Login or Register with:</p>
-            <button className="btn btn-danger" onClick={authenticateUser}>
-              <span className="fa fa-google">SignIn with Google</span>
-            </button>
-          </div>
-        </div>
       </section>
 
       <footer className="footer">
