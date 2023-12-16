@@ -50,8 +50,12 @@ function Home() {
         url: endpoint,
         data: formData,
       });
-      // Handle success or update UI accordingly
       console.log('Short URL created:', response.data);
+      if (response.data.status !== undefined && response.data.status === "unauthorized") {
+        console.log("user is unauthorized");
+        window.location.href = "/login";
+      }
+      // Handle success or update UI accordingly
       setInputURL("");
     } catch (error) {
       console.error('Error creating short URL:', error);
